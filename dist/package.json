@@ -1,0 +1,25 @@
+{
+  "name": "logseq-plugin-starter-vite",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.html",
+  "scripts": {
+    "build": "vite build && cp icon.png package.json dist/",
+    "build:prod": "vite build"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.5.5",
+    "vite": "^2.8.3"
+  },
+  "dependencies": {
+    "@logseq/libs": "^0.0.1-alpha.34"
+  },
+  "logseq": {
+    "id": "logseq-plugin-starter-vite",
+    "title": "logseq-plugin-starter-vite",
+    "icon": "./icon.png"
+  }
+}
