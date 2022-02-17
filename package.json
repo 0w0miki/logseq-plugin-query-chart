@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.html",
   "scripts": {
-    "build": "vite build && cp icon.png package.json dist/",
-    "build:prod": "vite build"
+    "build": "vite build && cp icon.png package.json LICENSE dist/"
   },
   "keywords": [],
   "author": "",
