@@ -4,12 +4,14 @@ import BarChart from './components/graph/BarChart.vue';
 import LineChart from './components/graph/LineChart.vue';
 import PieChart from './components/graph/PieChart.vue';
 import DoughnutChart from './components/graph/DoughnutChart.vue';
+import CurveChart from './components/graph/CurveChart.vue';
 
 const typeMap:  { [key: string]: any } = {
   bar: BarChart,
   line: LineChart,
   pie: PieChart,
   doughnut: DoughnutChart,
+  curve: CurveChart
 }
 
 let chartComponent = ref('line');
