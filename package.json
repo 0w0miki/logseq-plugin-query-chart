@@ -1,24 +1,29 @@
 {
-  "name": "logseq-plugin-starter-vite",
+  "name": "logseq-plugin-query-chart",
   "version": "0.0.1",
   "description": "",
-  "main": "index.html",
+  "main": "dist/index.html",
   "scripts": {
-    "build": "vite build && cp icon.png package.json LICENSE dist/"
+    "build": "vite build && cp package.json LICENSE dist/"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@vitejs/plugin-vue": "^3.1.2",
     "typescript": "^4.8.4",
-    "vite": "^3.1.4"
+    "vite": "^3.1.4",
+    "vue": "^3.2.41"
   },
   "dependencies": {
-    "@logseq/libs": "^0.0.9"
+    "@logseq/libs": "^0.0.9",
+    "chart.js": "^3.9.1",
+    "chrono-node": "^2.4.1",
+    "logseq-dateutils": "^0.0.14",
+    "vue-chartjs": "^4.1.2"
   },
   "logseq": {
-    "id": "logseq-plugin-starter-vite",
-    "title": "logseq-plugin-starter-vite",
-    "icon": "./icon.png"
+    "id": "logseq-plugin-query-chart",
+    "title": "logseq-plugin-query-chart"
   }
 }
