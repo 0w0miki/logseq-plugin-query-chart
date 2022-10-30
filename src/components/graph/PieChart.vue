@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, PropType } from 'vue';
+import { ref, PropType, computed } from 'vue';
 import { Pie } from 'vue-chartjs';
 import { Chart as ChartJS,
   Title,
@@ -19,7 +19,8 @@ import { Chart as ChartJS,
   Legend,
   ArcElement,
   CategoryScale,
-  Plugin
+  Plugin,
+ChartData
 } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, ArcElement, CategoryScale);
@@ -49,6 +50,10 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
+    data: {
+      type: Object,
+      default: () => {}
+    },
     plugins: {
       type: Array as PropType<Plugin<'pie'>[]>,
       default: () => []
@@ -57,21 +62,7 @@ const props = defineProps({
 
 const chartOptions = ref({ responsive: true, maintainAspectRatio: false });
 
-const chartData = ref({
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ],
-        datasets: [ { data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11] } ]
-    });
+const chartData = computed(() => {
+  return props.data as ChartData<"pie", number[], unknown>;
+})
 </script>

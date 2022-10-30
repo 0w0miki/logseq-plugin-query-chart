@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, PropType } from 'vue';
+import { ref, PropType, computed } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -22,7 +22,8 @@ import {
   ArcElement,
   CategoryScale,
   LinearScale,
-  Plugin
+  Plugin,
+ChartData
 } from 'chart.js';
 
 ChartJS.register(
@@ -59,6 +60,10 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
+    data: {
+      type: Object,
+      default: () => {}
+    },
     plugins: {
       type: Array as PropType<Plugin<'doughnut'>[]>,
       default: () => []
@@ -67,21 +72,7 @@ const props = defineProps({
 
 const chartOptions = ref({ responsive: true, maintainAspectRatio: false });
 
-const chartData = ref({
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ],
-        datasets: [ { data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11] } ]
-    });
+const chartData = computed(() => {
+  return props.data as ChartData<"doughnut", number[], unknown>;
+});
 </script>

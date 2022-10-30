@@ -12,9 +12,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, computed } from 'vue';
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartData } from 'chart.js';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -43,6 +43,10 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
+    data: {
+      type: Object,
+      default: () => {}
+    }
     // plugins: {
     //   type: Object,
     //   default: () => {}
@@ -51,21 +55,7 @@ const props = defineProps({
 
 const chartOptions = ref({ responsive: true });
 
-const chartData = ref({
-        labels: [
-          'January',
-          'February',
-          'March',
-          'April',
-          'May',
-          'June',
-          'July',
-          'August',
-          'September',
-          'October',
-          'November',
-          'December'
-        ],
-        datasets: [ { data: [40, 20, 12, 39, 10, 40, 39, 80, 40, 20, 12, 11] } ]
-    });
+const chartData = computed(() => {
+  return props.data as ChartData<"bar", number[], unknown>;
+})
 </script>

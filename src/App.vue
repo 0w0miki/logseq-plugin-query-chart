@@ -75,7 +75,7 @@ onMounted(() => {
 <template>
   <component
     :is="chartComponent"
-    :chart-data="chartData"
+    :data="chartData"
     >
   </component>
 </template>
