@@ -21,8 +21,6 @@ export const proxyQuery = async (content: string) => {
     .replace("#+BEGIN_QUERY", "")
     .replace("#+END_QUERY", "");
 
-  // console.log("before parse input");
-
   // TODO remove :in and :inputs and replace those variables
   if (content.includes(":inputs [")) {
     inputs = content.slice(content.indexOf(":inputs ["));
@@ -36,16 +34,12 @@ export const proxyQuery = async (content: string) => {
       if (input !== "today" && input !== "yesterday") {
         input = input.replace("d", "days").replace("-", " ")
       }
-      // console.log(chrono.parse(input)[0]);
       return getYYYMMDD(chrono.parse(input)[0].start.date());
     });
   }
 
-  // console.log("before parse query")
   // Get text after :query
   const query = content.slice(content.indexOf("[:find"));
-
-  // console.log(query, inputs);
 
   // Pass query through API
   let results: any[];
@@ -55,10 +49,9 @@ export const proxyQuery = async (content: string) => {
     } else {
       results = await logseq.DB.datascriptQuery(query, ...inputs);
     }
-    console.log(results);
     return results[0].map((_: any, colIndex: number) => results.map(row => row[colIndex]));
   } catch (error) {
-    // console.log(error);
+    console.log(error);
   }
 }
 

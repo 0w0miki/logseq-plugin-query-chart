@@ -16,7 +16,6 @@ let chartComponent = ref('line');
 let chartData = ref({});
 
 function parseChartOptions(text: String) {
-  console.log(`start parse ${text}`);
   text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
 
   const list = text.split(',')
@@ -38,15 +37,12 @@ function parseChartOptions(text: String) {
 }
 
 function generateChartData(rawData: any, chartLabels: string[]) {
-  console.log(rawData);
   let datasets = rawData.map((data: any, index: number) => {
       return {
         label: chartLabels[index],
         data,
       }
   }).slice(1);
-  console.log(datasets)
-  debugger;
   return {
     datasetIdKey: chartLabels[0],
     labels: rawData[0],
@@ -55,18 +51,12 @@ function generateChartData(rawData: any, chartLabels: string[]) {
 }
 
 onMounted(() => {
-  console.log("App created.");
   window.addEventListener('message', (event: MessageEvent) => {
     let { optionText, data } = event.data;
-    console.log(`receive message`, optionText, data);
     let {chartType, chartColor, chartLabels} = parseChartOptions(optionText);
-
-    console.log('after parse option', chartType, chartColor, chartLabels);
 
     chartComponent.value = typeMap[chartType];
     chartData.value = generateChartData(data, chartLabels);
-
-    console.log(chartData.value, chartComponent.value);
   })
 })
 

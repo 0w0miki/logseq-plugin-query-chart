@@ -5,7 +5,6 @@ import { proxyQuery, getPluginDir } from './utils';
 async function getChartProp(renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
   const optionText: string = childBlock.content;
-  console.log(optionText);
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
 
@@ -44,8 +43,6 @@ const main = async () => {
 
     logseq.provideModel({
       async refreshChart() {
-        console.log('onload called');
-
         const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
         iframe.contentWindow?.postMessage(await getChartProp(renderBlock), '*');
       }
