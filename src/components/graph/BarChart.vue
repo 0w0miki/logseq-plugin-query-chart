@@ -11,10 +11,12 @@
   />
 </template>
 
-<script setup lang="ts">
+<script setup>
 import { ref, computed } from 'vue';
 import { Bar } from 'vue-chartjs';
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale, ChartData } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { defaultColorScheme } from './types.ts';
+import 'chartjs-plugin-colorschemes-v3';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);
 
@@ -46,16 +48,23 @@ const props = defineProps({
     data: {
       type: Object,
       default: () => {}
+    },
+    colorScheme: {
+      type: String,
+      default: defaultColorScheme
     }
-    // plugins: {
-    //   type: Object,
-    //   default: () => {}
-    // }
 });
 
-const chartOptions = ref({ responsive: true });
+const chartOptions = ref({
+  responsive: true,
+  plugins: {
+    colorschemes: {
+      scheme: props.colorScheme || defaultColorScheme
+    }
+  }
+});
 
 const chartData = computed(() => {
-  return props.data as ChartData<"bar", number[], unknown>;
+  return props.data;
 })
 </script>

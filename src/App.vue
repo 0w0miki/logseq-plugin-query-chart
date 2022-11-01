@@ -5,6 +5,7 @@ import LineChart from './components/graph/LineChart.vue';
 import PieChart from './components/graph/PieChart.vue';
 import DoughnutChart from './components/graph/DoughnutChart.vue';
 import CurveChart from './components/graph/CurveChart.vue';
+import { defaultColorScheme } from './components/graph/types';
 
 const typeMap:  { [key: string]: any } = {
   bar: BarChart,
@@ -16,6 +17,7 @@ const typeMap:  { [key: string]: any } = {
 
 let chartComponent = ref('line');
 let chartData = ref({});
+let chartColor = ref(defaultColorScheme);
 
 function parseChartOptions(text: String) {
   text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
@@ -26,16 +28,16 @@ function parseChartOptions(text: String) {
 
   // type, color schema, ...labels
   const chartType = list[0];
-  let chartColor = '';
+  let colorScheme = '';
   let chartLabels: string[];
   const regRes = list[1].match(/color:\s*"(.*)"/);
   if (regRes) {
-     chartColor = regRes[1];
+     colorScheme = regRes[1];
     chartLabels = list.slice(2);
   } else {
     chartLabels = list.slice(1);
   }
-  return {chartType, chartColor, chartLabels};
+  return {chartType, colorScheme, chartLabels};
 }
 
 function generateChartData(rawData: any, chartLabels: string[]) {
@@ -55,8 +57,9 @@ function generateChartData(rawData: any, chartLabels: string[]) {
 onMounted(() => {
   window.addEventListener('message', (event: MessageEvent) => {
     let { optionText, data } = event.data;
-    let {chartType, chartColor, chartLabels} = parseChartOptions(optionText);
+    let {chartType, colorScheme, chartLabels} = parseChartOptions(optionText);
 
+    chartColor.value = colorScheme;
     chartComponent.value = typeMap[chartType];
     chartData.value = generateChartData(data, chartLabels);
   })
@@ -68,6 +71,7 @@ onMounted(() => {
   <component
     :is="chartComponent"
     :data="chartData"
+    :colorScheme="chartColor"
     >
   </component>
 </template>

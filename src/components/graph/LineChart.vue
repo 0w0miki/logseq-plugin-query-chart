@@ -10,8 +10,8 @@
   />
 </template>
 
-<script setup lang="ts">
-import { ref, PropType, computed } from 'vue';
+<script setup>
+import { ref, computed } from 'vue';
 import { Line } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -22,9 +22,9 @@ import {
   PointElement,
   CategoryScale,
   LinearScale,
-  Plugin,
-ChartData
 } from 'chart.js';
+import 'chartjs-plugin-colorschemes-v3';
+import { defaultColorScheme } from './types.ts';
 
 ChartJS.register(
   Title,
@@ -65,15 +65,22 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
-    plugins: {
-      type: Array as PropType<Plugin<'line'>[]>,
-      default: () => []
+    colorScheme: {
+      type: String,
+      default: defaultColorScheme
     }
 });
 
-const chartOptions = ref({ responsive: true });
+const chartOptions = ref({
+  responsive: true,
+  plugins: {
+    colorschemes: {
+      scheme: props.colorScheme || defaultColorScheme
+    }
+  }
+});
 
 const chartData = computed(() => {
-  return props.data as ChartData<"line", number[], unknown>;
+  return props.data;
 })
 </script>

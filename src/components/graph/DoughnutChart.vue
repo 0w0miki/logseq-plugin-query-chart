@@ -11,8 +11,8 @@
   />
 </template>
 
-<script setup lang="ts">
-import { ref, PropType, computed } from 'vue';
+<script setup>
+import { ref, computed } from 'vue';
 import { Doughnut } from 'vue-chartjs';
 import {
   Chart as ChartJS,
@@ -22,9 +22,9 @@ import {
   ArcElement,
   CategoryScale,
   LinearScale,
-  Plugin,
-ChartData
 } from 'chart.js';
+import { defaultColorScheme } from './types.ts';
+import 'chartjs-plugin-colorschemes-v3';
 
 ChartJS.register(
   Title,
@@ -64,15 +64,23 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
-    plugins: {
-      type: Array as PropType<Plugin<'doughnut'>[]>,
-      default: () => []
+    colorScheme: {
+      type: String,
+      default: defaultColorScheme
     }
 });
 
-const chartOptions = ref({ responsive: true, maintainAspectRatio: false });
+const chartOptions = ref({
+  responsive: true,
+  maintainAspectRatio: false,
+  plugins: {
+    colorschemes: {
+      scheme: props.colorScheme || defaultColorScheme
+    }
+  }
+});
 
 const chartData = computed(() => {
-  return props.data as ChartData<"doughnut", number[], unknown>;
+  return props.data;
 });
 </script>
