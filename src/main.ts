@@ -2,13 +2,13 @@ import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
 import { proxyQuery, getPluginDir } from './utils';
 
-async function getChartProp(renderBlock: BlockEntity) {
+async function getChartProp(chartId: string, renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
   const optionText: string = childBlock.content;
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
 
-  return {optionText, data};
+  return {chartId, optionText, data};
 }
 
 const main = async () => {
@@ -68,7 +68,7 @@ const main = async () => {
     logseq.provideModel({
       async refreshChart() {
         const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
-        iframe.contentWindow?.postMessage(await getChartProp(renderBlock), '*');
+        iframe.contentWindow?.postMessage(await getChartProp(chartId, renderBlock), '*');
       }
     });
 

@@ -1,6 +1,12 @@
 import { getYYYMMDD } from "logseq-dateutils";
 import chrono from "chrono-node";
 
+export const isNum = (x: any): boolean => {
+  return (x !== null) &&
+         (x !== '') &&
+         !isNaN(Number(x.toString()));
+}
+
 export const isQuery = (content: string): boolean => {
   return /#\+BEGIN_QUERY.*#\+END_QUERY/s.test(content);
 }
