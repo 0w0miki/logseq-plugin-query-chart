@@ -26,6 +26,30 @@ const main = async () => {
     )
   });
 
+  logseq.provideStyle(`
+  .query-chart-container {
+    align-items: center
+  }
+  .query-chart-iframe {
+    width: 100%;
+    height: 0;
+    margin: 0;
+  }
+  .query-chart-btn {
+    background-color: var(--ls-tertiary-background-color);
+    border: 1px solid var(--ls-border-color);
+    width: fit-content;
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    margin-top: 10px;
+    border-radius: var(--ls-border-radius-medium);
+  }
+  .query-chart-btn:hover {
+    background-color: var(--ls-menu-hover-color);
+    border: 1px solid var(--ls-secondary-border-color);
+  }
+  `)
+
   logseq.App.onMacroRendererSlotted(async ({slot, payload}) => {
     const uuid = payload.uuid;
     const [type] = payload.arguments;
@@ -48,28 +72,22 @@ const main = async () => {
       }
     });
 
-    logseq.provideStyle(`
-    .query-chart-iframe {
-      width: 100%;
-      height: 100%;
-      margin: 0;
-    }
-    `)
-
     logseq.provideUI({
       key: `${chartId}`,
       slot,
       reset: true,
       template: `
-      <iframe class="query-chart-iframe"
-        src="${getPluginDir()}/inline.html"
-        data-name="${chartId}"
-        data-uuid="${uuid}"
-        data-frame="${logseq.baseInfo.id}_iframe"
-        sandbox="allow-scripts"
-      >
-      </iframe>
-      <button data-on-click="refreshChart">Refresh Chart</button>
+      <div class="flex flex-col query-chart-container">
+        <iframe class="query-chart-iframe"
+          src="${getPluginDir()}/inline.html"
+          data-name="${chartId}"
+          data-uuid="${uuid}"
+          data-frame="${logseq.baseInfo.id}_iframe"
+          sandbox="allow-scripts"
+        >
+        </iframe>
+        <button class="query-chart-btn" data-on-click="refreshChart">Refresh Chart</button>
+      </div>
       `,
       style: { flex: 1 },
     });
