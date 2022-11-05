@@ -66,6 +66,12 @@ const main = async () => {
   .query-chart-container {
     align-items: center
   }
+  .query-chart-instruction {
+    display: block;
+  }
+  .query-chart-instruction.hide {
+    display: none;
+  }
   .query-chart-iframe {
     width: 0;
     height: 0;
@@ -108,10 +114,12 @@ const main = async () => {
 
         if (ok) {
           // modify the size
+          parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.add('hide');
           iframe.style.width = `${chartInfo.chartOption!.width}px`;
           iframe.style.height = `${chartInfo.chartOption!.height}px`;
           iframe.contentWindow?.postMessage(chartInfo, '*');
         } else {
+          parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.remove('hide');
         }
       }
     });
@@ -130,6 +138,9 @@ const main = async () => {
           sandbox="allow-scripts"
         >
         </iframe>
+        <div class="query-chart-instruction hide" data-uuid="${uuid}">
+        Incorrect format. Format should be "type, width, height, color scheme, labels". e.g. bar 400, 300, color: "tableau.Tableau10", x, y
+        </div>
         <button class="query-chart-btn" data-on-click="refreshChart">Refresh Chart</button>
       </div>
       `,
