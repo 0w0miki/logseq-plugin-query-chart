@@ -48,14 +48,6 @@ onMounted(() => {
     chartName = chartId;
   })
 })
-
-onUpdated(() => {
-  let iframe = parent.document.querySelector(`.query-chart-iframe[data-name=${chartName}]`) as HTMLIFrameElement;
-
-  iframe.style.height = `${chartHeight.value}px`;
-  iframe.style.width = `${chartWidth.value}px`;
-})
-
 </script>
 
 <template>

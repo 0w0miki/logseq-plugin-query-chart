@@ -1,6 +1,15 @@
 import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
 import { proxyQuery, getPluginDir, isNum } from './utils';
+import { isChartType } from './types';
+
+function isOptionTextValid(list: string[]): boolean {
+  let noErr = true;
+  noErr &&= isChartType(list[0]);
+  noErr &&= isNum(list[1]);
+  noErr &&= isNum(list[2]);
+  return noErr
+}
 
 function parseChartOptions(text: String) {
   text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
@@ -10,6 +19,9 @@ function parseChartOptions(text: String) {
       .map((ele) => ele.replace('{_}', ','));
 
   // type, width, height, (color schema), ...labels
+  if (!isOptionTextValid(list)) {
+    return { chartOption: null, ok: false };
+  }
   const chartType = list[0];
   const width = isNum(list[1]) ? Number(list[1]) : 0;
   const height = isNum(list[2]) ? Number(list[2]) : 0;
@@ -22,17 +34,17 @@ function parseChartOptions(text: String) {
   } else {
     chartLabels = list.slice(3);
   }
-  return { chartType, width, height, colorScheme, chartLabels };
+  return { chartOption: { chartType, width, height, colorScheme, chartLabels }, ok: true };
 }
 
 
 async function getChartProp(chartId: string, renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
-  const chartOption = parseChartOptions(childBlock.content);
+  let { chartOption, ok } = parseChartOptions(childBlock.content);
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
 
-  return {chartId, chartOption, data};
+  return { chartInfo: { chartId, chartOption, data }, ok };
 }
 
 const main = async () => {
@@ -92,7 +104,15 @@ const main = async () => {
     logseq.provideModel({
       async refreshChart() {
         const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
-        iframe.contentWindow?.postMessage(await getChartProp(chartId, renderBlock), '*');
+        let { chartInfo, ok } = await getChartProp(chartId, renderBlock);
+
+        if (ok) {
+          // modify the size
+          iframe.style.width = `${chartInfo.chartOption!.width}px`;
+          iframe.style.height = `${chartInfo.chartOption!.height}px`;
+          iframe.contentWindow?.postMessage(chartInfo, '*');
+        } else {
+        }
       }
     });
 
