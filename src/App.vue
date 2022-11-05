@@ -32,8 +32,8 @@ function parseChartOptions(text: String) {
 
   // type, width, height, (color schema), ...labels
   const chartType = list[0];
-  chartWidth.value = isNum(list[1]) ? Number(list[1]) : 0;
-  chartHeight.value = isNum(list[2]) ? Number(list[2]) : 0;
+  const width = isNum(list[1]) ? Number(list[1]) : 0;
+  const height = isNum(list[2]) ? Number(list[2]) : 0;
   let colorScheme = '';
   let chartLabels: string[];
   const regRes = list[1].match(/color:\s*"(.*)"/);
@@ -43,7 +43,7 @@ function parseChartOptions(text: String) {
   } else {
     chartLabels = list.slice(3);
   }
-  return { chartType, colorScheme, chartLabels };
+  return { chartType, width, height, colorScheme, chartLabels };
 }
 
 function generateChartData(rawData: any, chartLabels: string[]) {
@@ -63,11 +63,13 @@ function generateChartData(rawData: any, chartLabels: string[]) {
 onMounted(() => {
   window.addEventListener('message', (event: MessageEvent) => {
     let { chartId, optionText, data } = event.data;
-    let { chartType, colorScheme, chartLabels } = parseChartOptions(optionText);
+    let { chartType, width, height, colorScheme, chartLabels } = parseChartOptions(optionText);
 
     chartColor.value = colorScheme;
     chartComponent.value = typeMap[chartType];
     chartData.value = generateChartData(data, chartLabels);
+    chartWidth.value = width;
+    chartHeight.value = height;
     chartName = chartId;
   })
 })
