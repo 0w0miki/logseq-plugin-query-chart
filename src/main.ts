@@ -1,14 +1,38 @@
 import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
-import { proxyQuery, getPluginDir } from './utils';
+import { proxyQuery, getPluginDir, isNum } from './utils';
+
+function parseChartOptions(text: String) {
+  text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
+
+  const list = text.split(',')
+      .filter(ele => ele !== '')
+      .map((ele) => ele.replace('{_}', ','));
+
+  // type, width, height, (color schema), ...labels
+  const chartType = list[0];
+  const width = isNum(list[1]) ? Number(list[1]) : 0;
+  const height = isNum(list[2]) ? Number(list[2]) : 0;
+  let colorScheme = '';
+  let chartLabels: string[];
+  const regRes = list[1].match(/color:\s*"(.*)"/);
+  if (regRes) {
+    colorScheme = regRes[3];
+    chartLabels = list.slice(4);
+  } else {
+    chartLabels = list.slice(3);
+  }
+  return { chartType, width, height, colorScheme, chartLabels };
+}
+
 
 async function getChartProp(chartId: string, renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
-  const optionText: string = childBlock.content;
+  const chartOption = parseChartOptions(childBlock.content);
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
 
-  return {chartId, optionText, data};
+  return {chartId, chartOption, data};
 }
 
 const main = async () => {
@@ -31,7 +55,7 @@ const main = async () => {
     align-items: center
   }
   .query-chart-iframe {
-    width: 100%;
+    width: 0;
     height: 0;
     margin: 0;
   }

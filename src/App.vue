@@ -6,7 +6,6 @@ import PieChart from './components/graph/PieChart.vue';
 import DoughnutChart from './components/graph/DoughnutChart.vue';
 import CurveChart from './components/graph/CurveChart.vue';
 import { defaultColorScheme } from './components/graph/types';
-import { isNum } from './utils'
 
 const typeMap:  { [key: string]: any } = {
   bar: BarChart,
@@ -22,29 +21,6 @@ let chartColor = ref(defaultColorScheme);
 let chartName = '';
 let chartWidth = ref(0);
 let chartHeight = ref(0);
-
-function parseChartOptions(text: String) {
-  text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
-
-  const list = text.split(',')
-      .filter(ele => ele !== '')
-      .map((ele) => ele.replace('{_}', ','));
-
-  // type, width, height, (color schema), ...labels
-  const chartType = list[0];
-  const width = isNum(list[1]) ? Number(list[1]) : 0;
-  const height = isNum(list[2]) ? Number(list[2]) : 0;
-  let colorScheme = '';
-  let chartLabels: string[];
-  const regRes = list[1].match(/color:\s*"(.*)"/);
-  if (regRes) {
-    colorScheme = regRes[3];
-    chartLabels = list.slice(4);
-  } else {
-    chartLabels = list.slice(3);
-  }
-  return { chartType, width, height, colorScheme, chartLabels };
-}
 
 function generateChartData(rawData: any, chartLabels: string[]) {
   let datasets = rawData.map((data: any, index: number) => {
@@ -62,14 +38,13 @@ function generateChartData(rawData: any, chartLabels: string[]) {
 
 onMounted(() => {
   window.addEventListener('message', (event: MessageEvent) => {
-    let { chartId, optionText, data } = event.data;
-    let { chartType, width, height, colorScheme, chartLabels } = parseChartOptions(optionText);
+    let { chartId, chartOption, data } = event.data;
 
-    chartColor.value = colorScheme;
-    chartComponent.value = typeMap[chartType];
-    chartData.value = generateChartData(data, chartLabels);
-    chartWidth.value = width;
-    chartHeight.value = height;
+    chartColor.value = chartOption.colorScheme;
+    chartComponent.value = typeMap[chartOption.chartType];
+    chartData.value = generateChartData(data, chartOption.chartLabels);
+    chartWidth.value = chartOption.width;
+    chartHeight.value = chartOption.height;
     chartName = chartId;
   })
 })
