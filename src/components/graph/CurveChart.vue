@@ -1,20 +1,17 @@
 <template>
   <LineChart
-    :chart-options="chartOptions"
     :chart-data="chartData"
     :chart-id="chartId"
     :css-classes="cssClasses"
     :styles="styles"
     :width="width"
     :height="height"
-    :colorScheme="colorScheme"
   />
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import LineChart from './LineChart.vue';
-import { defaultColorScheme } from './types';
 
 const props = defineProps({
     chartId: {
@@ -45,13 +42,7 @@ const props = defineProps({
       type: Object,
       default: () => {}
     },
-    colorScheme: {
-      type: String,
-      default: defaultColorScheme
-    }
 });
-
-const chartOptions = ref({ responsive: true });
 
 const chartData = computed(() => {
   const tempData = JSON.parse(JSON.stringify(props.data));
@@ -61,6 +52,4 @@ const chartData = computed(() => {
   })
   return tempData;
 })
-
-const colorScheme = computed(() => props.colorScheme)
 </script>
