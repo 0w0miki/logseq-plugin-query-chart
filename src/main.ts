@@ -107,21 +107,48 @@ const main = async () => {
       return;
     }
 
-    logseq.provideModel({
-      async refreshChart() {
-        const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
-        let { chartInfo, ok } = await getChartProp(chartId, renderBlock);
+    const waitIframeReady = async () => {
+      let count = 0;
+      return new Promise<void>((resolve, reject) => {
+        const timer = setInterval(() => {
+          if (parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) !== null) {
+            clearInterval(timer);
+            resolve();
+          } else {
+            count++;
+          }
+          if (count > 60 * 5) {
+            clearInterval(timer);
+            reject('time out');
+          }
+        }, 200)
+      })
+    }
 
-        if (ok) {
-          // modify the size
-          parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.add('hide');
-          iframe.style.width = `${chartInfo.chartOption!.width}px`;
-          iframe.style.height = `${chartInfo.chartOption!.height}px`;
-          iframe.contentWindow?.postMessage(chartInfo, '*');
-        } else {
-          parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.remove('hide');
-        }
+    const refreshChart = async () => {
+      try {
+        await waitIframeReady();
+      } catch (error) {
+        console.log(error);
+        return;
       }
+
+      const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
+      let { chartInfo, ok } = await getChartProp(chartId, renderBlock);
+
+      if (ok) {
+        // modify the size
+        parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.add('hide');
+        iframe.style.width = `${chartInfo.chartOption!.width}px`;
+        iframe.style.height = `${chartInfo.chartOption!.height}px`;
+        iframe.contentWindow?.postMessage(chartInfo, '*');
+      } else {
+        parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.remove('hide');
+      }
+    }
+
+    logseq.provideModel({
+      refreshChart
     });
 
     logseq.provideUI({
@@ -146,6 +173,8 @@ const main = async () => {
       `,
       style: { flex: 1 },
     });
+
+    refreshChart();
   });
 }
 
