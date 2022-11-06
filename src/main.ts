@@ -15,8 +15,8 @@ function parseChartOptions(text: String) {
   text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
 
   const list = text.split(',')
-      .filter(ele => ele !== '')
-      .map((ele) => ele.replace('{_}', ','));
+      .filter((ele: string) => ele !== '')
+      .map((ele: string) => ele.replace('{_}', ',').trim());
 
   // type, width, height, (color schema), ...labels
   if (!isOptionTextValid(list)) {
@@ -27,9 +27,9 @@ function parseChartOptions(text: String) {
   const height = isNum(list[2]) ? Number(list[2]) : 0;
   let colorScheme = '';
   let chartLabels: string[];
-  const regRes = list[1].match(/color:\s*"(.*)"/);
+  const regRes = list[3].match(/color:\s*"(.*)"/);
   if (regRes) {
-    colorScheme = regRes[3];
+    colorScheme = regRes[1];
     chartLabels = list.slice(4);
   } else {
     chartLabels = list.slice(3);
