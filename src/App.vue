@@ -18,7 +18,6 @@ const typeMap:  { [key: string]: any } = {
 let chartComponent = ref('line');
 let chartData = ref({});
 let chartColor = ref(defaultColorScheme);
-let chartName = '';
 let chartWidth = ref(0);
 let chartHeight = ref(0);
 
@@ -38,14 +37,13 @@ function generateChartData(rawData: any, chartLabels: string[]) {
 
 onMounted(() => {
   window.addEventListener('message', (event: MessageEvent) => {
-    let { chartId, chartOption, data } = event.data;
+    let { chartOption, data } = event.data;
 
     chartColor.value = chartOption.colorScheme;
     chartComponent.value = typeMap[chartOption.chartType];
     chartData.value = generateChartData(data, chartOption.chartLabels);
     chartWidth.value = chartOption.width;
     chartHeight.value = chartOption.height;
-    chartName = chartId;
   })
 })
 </script>

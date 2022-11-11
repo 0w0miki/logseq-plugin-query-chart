@@ -38,13 +38,13 @@ function parseChartOptions(text: String) {
 }
 
 
-async function getChartProp(chartId: string, renderBlock: BlockEntity) {
+async function getChartProp(renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
   let { chartOption, ok } = parseChartOptions(childBlock.content);
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
 
-  return { chartInfo: { chartId, chartOption, data }, ok };
+  return { chartInfo: { chartOption, data }, ok };
 }
 
 const main = async () => {
@@ -134,7 +134,7 @@ const main = async () => {
       }
 
       const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
-      let { chartInfo, ok } = await getChartProp(chartId, renderBlock);
+      let { chartInfo, ok } = await getChartProp(renderBlock);
 
       if (ok) {
         // modify the size
