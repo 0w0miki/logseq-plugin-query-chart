@@ -23,8 +23,8 @@ function parseChartOptions(text: String) {
     return { chartOption: null, ok: false };
   }
   const chartType = list[0];
-  const width = isNum(list[1]) ? Number(list[1]) : 0;
-  const height = isNum(list[2]) ? Number(list[2]) : 0;
+  const width = Number(list[1]) > 600 ? 600 : Number(list[1]);
+  const height = Number(list[2]) > 600 ? 600 : Number(list[2]);
   let colorScheme = '';
   let chartLabels: string[];
   const regRes = list[3].match(/color:\s*"(.*)"/);
