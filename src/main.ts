@@ -20,7 +20,12 @@ function parseChartOptions(text: String) {
 
   // type, width, height, (color schema), ...labels
   if (!isOptionTextValid(list)) {
-    return { chartOption: null, ok: false };
+    return {
+      chartOption: null,
+      error: 'Incorrect format. Format should be \n'
+             + '"type, width, height, color scheme, labels".\n'
+             + 'e.g. bar 400, 300, color: "tableau.Tableau10", x, y'
+    };
   }
   const chartType = list[0];
   const width = Number(list[1]) > 600 ? 600 : Number(list[1]);
@@ -34,17 +39,19 @@ function parseChartOptions(text: String) {
   } else {
     chartLabels = list.slice(3);
   }
-  return { chartOption: { chartType, width, height, colorScheme, chartLabels }, ok: true };
+  return { chartOption: { chartType, width, height, colorScheme, chartLabels }, error: null };
 }
 
 
 async function getChartProp(renderBlock: BlockEntity) {
   const childBlock = renderBlock!.children![0] as BlockEntity;
-  let { chartOption, ok } = parseChartOptions(childBlock.content);
+  let { chartOption, error } = parseChartOptions(childBlock.content);
   const grandBlock = childBlock!.children![0] as BlockEntity;
   const data = await proxyQuery(grandBlock.content);
-
-  return { chartInfo: { chartOption, data }, ok };
+  if (!error && !data) {
+    error = 'Query Failed';
+  }
+  return { chartInfo: { chartOption, data }, error };
 }
 
 const main = async () => {
@@ -66,10 +73,10 @@ const main = async () => {
   .query-chart-container {
     align-items: center
   }
-  .query-chart-instruction {
+  .query-chart-tips {
     display: block;
   }
-  .query-chart-instruction.hide {
+  .query-chart-tips.hide {
     display: none;
   }
   .query-chart-iframe {
@@ -97,6 +104,7 @@ const main = async () => {
     const [type] = payload.arguments;
 
     if (!type?.startsWith(':query-chart_')) return;
+
     const id = type.split('_')[1]?.trim();
     const chartId = `query-chart_${id}`;
     const renderBlock = await logseq.Editor.getBlock(uuid, {
@@ -134,16 +142,18 @@ const main = async () => {
       }
 
       const iframe = parent.document.querySelector(`.query-chart-iframe[data-uuid="${uuid}"]`) as HTMLIFrameElement;
-      let { chartInfo, ok } = await getChartProp(renderBlock);
+      const tips = parent.document.querySelector(`.query-chart-tips[data-uuid="${uuid}"]`) as HTMLElement;
+      let { chartInfo, error } = await getChartProp(renderBlock);
 
-      if (ok) {
+      if (!error) {
         // modify the size
-        parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.add('hide');
+        tips.classList.add('hide');
         iframe.style.width = `${chartInfo.chartOption!.width}px`;
         iframe.style.height = `${chartInfo.chartOption!.height}px`;
         iframe.contentWindow?.postMessage(chartInfo, '*');
       } else {
-        parent.document.querySelector(`.query-chart-instruction[data-uuid="${uuid}"]`)?.classList.remove('hide');
+        tips.classList.remove('hide');
+        tips.innerText = error;
       }
     }
 
@@ -165,9 +175,7 @@ const main = async () => {
           sandbox="allow-scripts"
         >
         </iframe>
-        <div class="query-chart-instruction hide" data-uuid="${uuid}">
-        Incorrect format. Format should be "type, width, height, color scheme, labels". e.g. bar 400, 300, color: "tableau.Tableau10", x, y
-        </div>
+        <div class="query-chart-tips hide" data-uuid="${uuid}"></div>
         <button class="query-chart-btn" data-on-click="refreshChart">Refresh Chart</button>
       </div>
       `,
