@@ -27,7 +27,6 @@ export const proxyQuery = async (content: string) => {
     .replace("#+BEGIN_QUERY", "")
     .replace("#+END_QUERY", "");
 
-  // TODO remove :in and :inputs and replace those variables
   if (content.includes(":inputs [")) {
     inputs = content.slice(content.indexOf(":inputs ["));
     let inputsArr = inputs
@@ -55,7 +54,11 @@ export const proxyQuery = async (content: string) => {
     } else {
       results = await logseq.DB.datascriptQuery(query, ...inputs);
     }
-    return results[0].map((_: any, colIndex: number) => results.map(row => row[colIndex]));
+    if (results?.length > 0) {
+      return results[0].map((_: any, colIndex: number) => results.map(row => row[colIndex]));
+    } else {
+      return null;
+    }
   } catch (error) {
     console.log(error);
   }
