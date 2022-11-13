@@ -22,9 +22,9 @@ jobs:
       - name: Build
         id: build
         run: |
-          npm install -g pnpm
-          pnpm install
-          pnpm build
+          npm i && npm build
+          mkdir ${{ env.PLUGIN_NAME }}
+          cp README.md package.json ${{ env.PLUGIN_NAME }}
           mv dist ${{ env.PLUGIN_NAME }}
           zip -r ${{ env.PLUGIN_NAME }}.zip ${{ env.PLUGIN_NAME }}
           tar -cvzf ${{ env.PLUGIN_NAME }}.tar.gz -C ${{ env.PLUGIN_NAME }} .
