@@ -75,7 +75,7 @@ const main = async () => {
   console.debug('Query chart plugin loaded');
   logseq.UI.showMsg('Hello World!');
 
-  logseq.Editor.registerSlashCommand('query chart', async () => {
+  logseq.Editor.registerSlashCommand('insert Query Chart', async () => {
     await logseq.Editor.insertAtEditingCursor(
       `{{renderer :query-chart}}`
     )
