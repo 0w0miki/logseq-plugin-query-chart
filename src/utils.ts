@@ -62,7 +62,7 @@ export const proxyQuery = async (content: string) => {
     if (results?.length > 0) {
       return results[0].map((_: any, colIndex: number) => results.map(row => row[colIndex]));
     } else {
-      return null;
+      return;
     }
   } catch (error) {
     console.log(error);

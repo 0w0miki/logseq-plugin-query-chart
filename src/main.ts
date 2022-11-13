@@ -1,7 +1,7 @@
 import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
 import { proxyQuery, getPluginDir, isNum } from './utils';
-import { isChartType } from './types';
+import { isChartType, defaultChartOption, ChartOption, ChartInfo, ChartType } from './types';
 
 function isOptionTextValid(list: string[]): boolean {
   let noErr = true;
@@ -11,7 +11,7 @@ function isOptionTextValid(list: string[]): boolean {
   return noErr
 }
 
-function parseChartOptions(text: String) {
+function parseChartOptions(text: String): { chartOption: ChartOption, error: string | null } {
   text = text.replace(/".+?(?<!\\)"/g, match => match.replace(/,/g, '{__}'));
 
   const list = text.split(',')
@@ -21,13 +21,13 @@ function parseChartOptions(text: String) {
   // type, width, height, (color schema), ...labels
   if (!isOptionTextValid(list)) {
     return {
-      chartOption: null,
+      chartOption: defaultChartOption,
       error: 'Incorrect format. Format should be \n'
              + '"type, width, height, color scheme, labels".\n'
-             + 'e.g. bar 400, 300, color: "tableau.Tableau10", x, y'
+             + 'e.g. bar, 400, 300, color: "tableau.Tableau10", x, y'
     };
   }
-  const chartType = list[0];
+  const chartType = list[0] as ChartType;
   const width = Number(list[1]) > 600 ? 600 : Number(list[1]);
   const height = Number(list[2]) > 600 ? 600 : Number(list[2]);
   let colorScheme = '';
@@ -43,14 +43,31 @@ function parseChartOptions(text: String) {
 }
 
 
-async function getChartProp(renderBlock: BlockEntity) {
-  const childBlock = renderBlock!.children![0] as BlockEntity;
-  let { chartOption, error } = parseChartOptions(childBlock.content);
-  const grandBlock = childBlock!.children![0] as BlockEntity;
-  const data = await proxyQuery(grandBlock.content);
-  if (!error && !data) {
-    error = 'Query Failed';
-  }
+async function getChartProp(renderBlock: BlockEntity): Promise<{ chartInfo: ChartInfo; error: string | null; }> {
+  let chartOption: ChartOption = defaultChartOption;
+  let data = null
+  let error: string | null = null;
+
+  do {
+    if (!renderBlock!.children?.length || !(renderBlock!.children[0] as BlockEntity).children?.length) {
+      error = 'Block missing. Need a block for chart option and a block for advanced query.';
+      break;
+    }
+
+    const childBlock = renderBlock!.children![0] as BlockEntity;
+    const grandBlock = childBlock!.children![0] as BlockEntity;
+
+    data = await proxyQuery(grandBlock.content);
+    if (!data) {
+      error = 'Query Failed';
+      break;
+    }
+
+    const temp = parseChartOptions(childBlock.content);
+    chartOption = temp.chartOption;
+    error = temp.error;
+  } while(0);
+
   return { chartInfo: { chartOption, data }, error };
 }
 
