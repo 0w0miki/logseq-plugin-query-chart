@@ -74,7 +74,11 @@ const main = async () => {
     align-items: center
   }
   .query-chart-tips {
-    display: block;
+    background-color: var(--ls-tertiary-background-color);
+    border: 1px solid var(--ls-border-color);
+    padding: 10px;
+    border-radius: var(--ls-border-radius-medium);
+    align-items: center;
   }
   .query-chart-tips.hide {
     display: none;
@@ -153,7 +157,7 @@ const main = async () => {
         iframe.contentWindow?.postMessage(chartInfo, '*');
       } else {
         tips.classList.remove('hide');
-        tips.innerText = error;
+        (tips.querySelector('.msg') as HTMLElement)!.innerText = error;
       }
     }
 
@@ -175,7 +179,10 @@ const main = async () => {
           sandbox="allow-scripts"
         >
         </iframe>
-        <div class="query-chart-tips hide" data-uuid="${uuid}"></div>
+        <div class="query-chart-tips hide flex flex-row" data-uuid="${uuid}">
+          <span style="color: yellow; font-size: 1.8rem">&#9888</span>
+          <span class="msg" style="padding-left: 15px"></span>
+        </div>
         <button class="query-chart-btn" data-on-click="refreshChart">Refresh Chart</button>
       </div>
       `,
