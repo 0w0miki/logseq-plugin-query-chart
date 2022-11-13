@@ -58,14 +58,9 @@ const main = async () => {
   console.debug('Query chart plugin loaded');
   logseq.UI.showMsg('Hello World!');
 
-  // Generate unique identifier
-  const uniqueIdentifier = () => Math.random()
-    .toString(36)
-    .replace(/[^a-z]+/g, '');
-
   logseq.Editor.registerSlashCommand('query chart', async () => {
     await logseq.Editor.insertAtEditingCursor(
-      `{{renderer :query-chart_${uniqueIdentifier()}}}`
+      `{{renderer :query-chart}}`
     )
   });
 
@@ -107,10 +102,9 @@ const main = async () => {
     const uuid = payload.uuid;
     const [type] = payload.arguments;
 
-    if (!type?.startsWith(':query-chart_')) return;
+    if (!type?.startsWith(':query-chart')) return;
 
-    const id = type.split('_')[1]?.trim();
-    const chartId = `query-chart_${id}`;
+    const chartId = `query-chart_${slot}`;
     const renderBlock = await logseq.Editor.getBlock(uuid, {
       includeChildren: true,
     });

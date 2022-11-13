@@ -1,6 +1,11 @@
 import { getYYYMMDD } from "logseq-dateutils";
 import chrono from "chrono-node";
 
+// Generate unique identifier
+export const uniqueIdentifier = () => Math.random()
+  .toString(36)
+  .replace(/[^a-z]+/g, '');
+
 export const isNum = (x: any): boolean => {
   return (x !== null) &&
          (x !== '') &&
