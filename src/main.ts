@@ -73,7 +73,6 @@ async function getChartProp(renderBlock: BlockEntity): Promise<{ chartInfo: Char
 
 const main = async () => {
   console.debug('Query chart plugin loaded');
-  logseq.UI.showMsg('Hello World!');
 
   logseq.Editor.registerSlashCommand('insert Query Chart', async () => {
     await logseq.Editor.insertAtEditingCursor(
