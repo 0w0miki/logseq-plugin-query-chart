@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "@vitejs/plugin-vue": "^3.1.2",
     "typescript": "^4.8.4",
@@ -25,6 +25,7 @@
   },
   "logseq": {
     "id": "logseq-plugin-query-chart",
-    "title": "logseq-plugin-query-chart"
+    "title": "logseq-plugin-query-chart",
+    "icon": "./icon.svg"
   }
 }

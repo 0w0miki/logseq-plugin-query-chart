@@ -1,0 +1,14 @@
+<svg width="600" height="600" xmlns="http://www.w3.org/2000/svg">
+
+ <g>
+  <title>Layer 1</title>
+  <line stroke-width="10" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_1" y2="541" x2="64" y1="59" x1="64" stroke="#b2b2b2" fill="none"/>
+  <line stroke-width="10" stroke-linecap="undefined" stroke-linejoin="undefined" id="svg_2" y2="536" x2="541" y1="536" x1="59" stroke="#b2b2b2" fill="none"/>
+  <path id="svg_15" d="m105,423c35,1 87,-164 118,-163c31,1 75,88 105,84c30,-4 60,-161 84,-163c24,-2 97,158 98,192" opacity="NaN" stroke-width="10" stroke="#FABA6F" fill="none"/>
+  <ellipse ry="12" rx="12" id="svg_17" cy="428" cx="100" stroke-width="10" stroke="#FABA6F" fill="#ff56aa"/>
+  <ellipse ry="12" rx="12" id="svg_18" cy="342" cx="331" stroke-width="10" stroke="#FABA6F" fill="#ff56aa"/>
+  <ellipse ry="12" rx="12" id="svg_19" cy="256" cx="224" stroke-width="10" stroke="#FABA6F" fill="#ff56aa"/>
+  <ellipse ry="12" rx="12" id="svg_20" cy="176" cx="411" stroke-width="10" stroke="#FABA6F" fill="#ff56aa"/>
+  <ellipse ry="12" rx="12" id="svg_21" cy="367" cx="513" stroke-width="10" stroke="#FABA6F" fill="#ff56aa"/>
+ </g>
+</svg>
