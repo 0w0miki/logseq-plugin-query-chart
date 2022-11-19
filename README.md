@@ -1,9 +1,10 @@
 # Logseq Plugin Query Chart
 
-## Introduction
+## Introduction (简介)
 This plugin can create a chart according to the result of advanced query, so that you can visualize any data in your logseq as you want.
 
-## Usage
+这个插件能根据高级查询的结果绘制图表。帮助你可视化logseq中记录的数据。
+## Usage (使用)
 
 1. Use slash command `/Insert Query Chart` to insert a chart.
 2. Write down the options of chart in the child block. Options including:
@@ -14,25 +15,40 @@ This plugin can create a chart according to the result of advanced query, so tha
     * labels of data
 3. Write advanced query in grand child block.
 
+<!--  -->
+1. 使用斜杠命令 `/Insert Query Chart` 插入图表。
+2. 在子块中写入图表的一些设置选项。包括：
+    * 图表类型
+    * 图表宽度
+    * 图表高度
+    * 颜色 (可选)
+    * 数据的标签
+3. 在子块的子块中写入需要绘图的高级查找。
+
 ![](./screenshots/query%20chart%20demo.gif)
 
-### Supported chart type
-* bar
+### Supported chart type (支持的图表类型)
+* bar (柱状图)
 <img src="./screenshots/bar.png" width="600">
-* pie
+* pie (饼图)
 <img src="./screenshots/pie.png" width="600">
-* doughnut
+* doughnut (环形图)
 <img src="./screenshots/doughnut.png" width="600">
-* line
+* line (折线图)
 <img src="./screenshots/line.png" width="600">
-* curve
+* curve (曲线图)
 <img src="./screenshots/curve.png" width="600">
 
-### Color Scheme
+### Color Scheme (配色方案)
 Check this [link](https://nagix.github.io/chartjs-plugin-colorschemes/colorchart.html) for all supported color schemes. Default color scheme is `brewer.Paired12`.
 
-### Advanced query
+所有配色方案请参考[此链接](https://nagix.github.io/chartjs-plugin-colorschemes/colorchart.html). 默认配色方案为`brewer.Paired12`。
+
+
+### Advanced query (高级查询)
 You need to write a query whose result is a list of array. Take the following query as an example.
+
+你需要写一个带有数组返回结果的查询。以下面这个查询为例
 ```clojure
   :query [:find ?x ?y
           :in $ ?start ?today
@@ -49,13 +65,19 @@ You need to write a query whose result is a list of array. Take the following qu
 The result would be like `[task1, A], [task2, B], [task3, C], ...`
 For x-y plot, the first elements in each array formats the data on x-axis.
 
-## Example
+查询结果将为`[task1, A], [task2, B], [task3, C], ...`。对于x-y形式坐标系的图，第一个元素是横轴的标签。
+
+## Example (示例)
 I have page like the following one. I log the sleep time as `sleep-time [[改善睡眠质量，平均7小时]]`
+
+我有如下形式的页面。我会以`睡眠时间 [[改善睡眠质量，平均7小时]]`的形式记录睡眠时间。
 ```markdown
 ## [[OKR Tracker]]
   - 6 [[改善睡眠质量，平均7小时]]
 ```
 The query I used to generate a chart for the last 7 days is
+
+我用如下查询绘制过去7天的睡眠时间曲线
 ```clojure
 {
   :query [:find ?date ?result
@@ -80,6 +102,8 @@ The query I used to generate a chart for the last 7 days is
 }
 ```
 The chart is
+
+图表如下
 
 ![](./screenshots/demo.png)
 
