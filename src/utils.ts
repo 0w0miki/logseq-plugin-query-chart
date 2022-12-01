@@ -12,19 +12,29 @@ export const isNum = (x: any): boolean => {
          !isNaN(Number(x.toString()));
 }
 
-export const isQuery = (content: string): boolean => {
+const isAdvQuery = (content: string): boolean => {
   return /#\+BEGIN_QUERY.*#\+END_QUERY/s.test(content);
+}
+
+const isDSLQuery = (content: string): boolean => {
+  return false;
 }
 
 const isDateInput = (input: string) => {
   return /today|yesterday|\dd(-before|-after)?/.test(input);
 }
 
-export const proxyQuery = async (content: string) => {
-  if (!isQuery(content)) {
-    return;
+const dslQuery = async (content: string) => {
+  let results: any[] | null;
+  try {
+    results = await logseq.DB.q(content);
+    return results;
+  } catch (error) {
+    console.log(error);
   }
+}
 
+const advQuery = async (content: string) => {
   let inputs: any;
 
   // Remove unnecessary syntax
@@ -32,6 +42,7 @@ export const proxyQuery = async (content: string) => {
     .replace("#+BEGIN_QUERY", "")
     .replace("#+END_QUERY", "");
 
+  // parse inputs
   if (content.includes(":inputs [")) {
     inputs = content.slice(content.indexOf(":inputs ["));
     let inputsArr = inputs
@@ -67,6 +78,17 @@ export const proxyQuery = async (content: string) => {
   } catch (error) {
     console.log(error);
   }
+}
+
+export const proxyQuery = async (content: string) => {
+  if (isDSLQuery(content)) {
+    return await dslQuery(content);
+  }
+
+  if (isAdvQuery(content)) {
+    return await advQuery(content);
+  }
+  return;
 }
 
 export const getPluginDir = () => {
