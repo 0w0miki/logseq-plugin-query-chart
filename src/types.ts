@@ -14,10 +14,3 @@ export interface ChartInfo {
   chartOption: ChartOption,
   data: number[] | string[] | undefined
 }
-
-export const defaultChartOption: ChartOption = {
-  chartType: 'curve',
-  width: 400,
-  height: 200,
-  chartLabels: [],
-}

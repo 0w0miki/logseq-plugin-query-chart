@@ -5,7 +5,7 @@ import LineChart from './components/graph/LineChart.vue';
 import PieChart from './components/graph/PieChart.vue';
 import DoughnutChart from './components/graph/DoughnutChart.vue';
 import CurveChart from './components/graph/CurveChart.vue';
-import { defaultColorScheme } from './components/graph/types';
+import { defaultColorScheme } from './meta';
 
 const typeMap:  { [key: string]: any } = {
   bar: BarChart,

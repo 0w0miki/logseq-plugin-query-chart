@@ -24,7 +24,7 @@ import {
   LinearScale,
 } from 'chart.js';
 import 'chartjs-plugin-colorschemes-v3';
-import { defaultColorScheme } from './types.ts';
+import { defaultColorScheme } from '../../meta.ts';
 
 ChartJS.register(
   Title,

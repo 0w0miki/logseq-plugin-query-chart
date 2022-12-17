@@ -1,7 +1,8 @@
 import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
 import { proxyQuery, getPluginDir, isNum } from './utils';
-import { isChartType, defaultChartOption, ChartOption, ChartInfo, ChartType } from './types';
+import { isChartType, ChartOption, ChartInfo, ChartType } from './types';
+import { defaultChartOption } from './meta';
 
 function isOptionTextValid(list: string[]): boolean {
   let noErr = true;

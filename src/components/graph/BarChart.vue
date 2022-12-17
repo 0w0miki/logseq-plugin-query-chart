@@ -15,7 +15,7 @@
 import { ref, computed } from 'vue';
 import { Bar } from 'vue-chartjs';
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
-import { defaultColorScheme } from './types.ts';
+import { defaultColorScheme } from '../../meta.ts';
 import 'chartjs-plugin-colorschemes-v3';
 
 ChartJS.register(Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale);

@@ -23,7 +23,7 @@ import {
   CategoryScale,
   LinearScale,
 } from 'chart.js';
-import { defaultColorScheme } from './types.ts';
+import { defaultColorScheme } from '../../meta.ts';
 import 'chartjs-plugin-colorschemes-v3';
 
 ChartJS.register(
