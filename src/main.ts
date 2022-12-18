@@ -1,6 +1,7 @@
 import '@logseq/libs';
 import { BlockEntity } from '@logseq/libs/dist/LSPlugin.user';
-import { proxyQuery, getPluginDir, isNum } from './utils';
+import { getPluginDir, isNum } from './utils';
+import { proxyQuery } from "./query";
 import { isChartType, ChartOption, ChartInfo, ChartType } from './types';
 import { defaultChartOption } from './meta';
 
