@@ -1,12 +1,51 @@
 import { getYYYMMDD } from "logseq-dateutils";
 import chrono from "chrono-node";
 
-const isAdvQuery = (content: string): boolean => {
-  return /#\+BEGIN_QUERY.*#\+END_QUERY/s.test(content);
+interface LogseqBuiltinInput {
+  name: string,
+  validateFn: (input: string) => boolean,
+  getValue: (input: string) => any,
 }
 
-const isDateInput = (input: string) => {
-  return /today|yesterday|\dd(-before|-after)?/.test(input);
+const builtinInputs: LogseqBuiltinInput[] = [
+  {
+    name: 'date',
+    validateFn: (input: string) => {
+      return /today|yesterday|\dd(-before|-after)?/.test(input);
+    },
+    getValue: (input: string) => {
+      if (input !== "today" && input !== "yesterday") {
+        input = input.replace("d", "days").replace("-", " ")
+      }
+      return getYYYMMDD(chrono.parse(input)[0].start.date());
+    }
+  },
+  {
+    name: 'current-page',
+    validateFn: (input: string) => {
+      return input === 'current-page';
+    },
+    getValue: async (input: string) => {
+      const page = await logseq.Editor.getCurrentPage();
+      return page?.name;
+    }
+  }
+]
+
+const convertInput = async (input: string) => {
+  for (let builtin of builtinInputs) {
+    if (!builtin.validateFn(input)) {
+      continue;
+    }
+    const ret = await builtin.getValue(input);
+    console.debug(`input: ${input} is builtin variable ${builtin.name}. Value: ${ret}`);
+    return ret;
+  }
+  return input;
+}
+
+const isAdvQuery = (content: string): boolean => {
+  return /#\+BEGIN_QUERY.*#\+END_QUERY/s.test(content);
 }
 
 const isDSLQuery = (content: string): boolean => {
@@ -37,15 +76,10 @@ const advQuery = async (content: string) => {
     let inputsArr = inputs
                     .match(/:inputs\s+\[(.*)\]/)[1]
                     .match(/(?<=:).*?(?=\s|$)|".*?"|\d+/g);
-    inputs = inputsArr.map((input: string) => {
-      if (!isDateInput(input)) {
-        return input;
-      }
-      if (input !== "today" && input !== "yesterday") {
-        input = input.replace("d", "days").replace("-", " ")
-      }
-      return getYYYMMDD(chrono.parse(input)[0].start.date());
-    });
+    inputs = await Promise.all(inputsArr.map(async (input: string) => {
+      const val = await convertInput(input);
+      return val;
+    }));
   }
 
   // Get text after :query
