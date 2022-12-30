@@ -27,7 +27,7 @@ const builtinInputs: LogseqBuiltinInput[] = [
     },
     getValue: async (input: string) => {
       const page = await logseq.Editor.getCurrentPage();
-      return page?.name;
+      return `"${page?.name}"`;
     }
   }
 ]
