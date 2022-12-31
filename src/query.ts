@@ -49,13 +49,15 @@ const isAdvQuery = (content: string): boolean => {
 }
 
 const isDSLQuery = (content: string): boolean => {
-  return false;
+  return /^\{\{query .*\}\}$/s.test(content);
 }
 
 const dslQuery = async (content: string) => {
   let results: any[] | null;
+  // parse query
+  const query = content.match(/^\{\{query (.*)\}\}$/s)![1];
   try {
-    results = await logseq.DB.q(content);
+    results = await logseq.DB.q(query);
     return results;
   } catch (error) {
     console.log(error);
