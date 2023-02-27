@@ -16,7 +16,7 @@
     "vue": "^3.2.41"
   },
   "dependencies": {
-    "@logseq/libs": "^0.0.9",
+    "@logseq/libs": "^0.0.14",
     "chart.js": "^3.9.1",
     "chartjs-plugin-colorschemes-v3": "^0.5.4",
     "chrono-node": "^2.4.1",
