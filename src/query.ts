@@ -1,5 +1,6 @@
 import { getYYYMMDD } from "logseq-dateutils";
 import chrono from "chrono-node";
+import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 
 interface LogseqBuiltinInput {
   name: string,
@@ -22,15 +23,35 @@ const builtinInputs: LogseqBuiltinInput[] = [
   },
   {
     name: 'current-page',
-    validateFn: (input: string) => {
-      return input === 'current-page';
-    },
-    getValue: async (input: string) => {
+    validateFn: (input: string) => { return input === 'current-page'; },
+    getValue: async () => {
       const page = await logseq.Editor.getCurrentPage();
       return `"${page?.name}"`;
     }
-  }
+  },
 ]
+
+const registerBuiltinInputs = (block: BlockEntity) => {
+  builtinInputs.push(...[
+    {
+      name: 'query-page',
+      validateFn: (input: string) => { return input === 'query-page'; },
+      getValue: async () => {
+        const page = await logseq.Editor.getPage(block.page.id)
+        return `"${page?.name}"`; }
+    },
+    {
+      name: 'current-block',
+      validateFn: (input: string) => { return input === 'current-block'; },
+      getValue: () => { return block.id; },
+    },
+    {
+      name: 'parent-block',
+      validateFn: (input: string) => { return input === 'parent-block'; },
+      getValue: () => { return block.parent.id; },
+    },
+  ])
+}
 
 const convertInput = async (input: string) => {
   for (let builtin of builtinInputs) {
@@ -105,7 +126,10 @@ const advQuery = async (content: string) => {
   }
 }
 
-export const proxyQuery = async (content: string) => {
+export const proxyQuery = async (block: BlockEntity) => {
+  const content: string = block.content;
+  registerBuiltinInputs(block);
+
   if (isDSLQuery(content)) {
     return await dslQuery(content);
   }

@@ -59,7 +59,7 @@ async function getChartProp(renderBlock: BlockEntity): Promise<{ chartInfo: Char
     const childBlock = renderBlock!.children![0] as BlockEntity;
     const grandBlock = childBlock!.children![0] as BlockEntity;
 
-    data = await proxyQuery(grandBlock.content);
+    data = await proxyQuery(grandBlock);
     if (!data) {
       error = 'Query Failed';
       break;
