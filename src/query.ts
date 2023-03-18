@@ -2,13 +2,13 @@ import { getYYYMMDD } from "logseq-dateutils";
 import chrono from "chrono-node";
 import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 
-interface LogseqBuiltinInput {
+interface LogseqInputConvter {
   name: string,
   validateFn: (input: string) => boolean,
   getValue: (input: string) => any,
 }
 
-const builtinInputs: LogseqBuiltinInput[] = [
+const inputConverters: LogseqInputConvter[] = [
   {
     name: 'date',
     validateFn: (input: string) => {
@@ -31,8 +31,8 @@ const builtinInputs: LogseqBuiltinInput[] = [
   },
 ]
 
-const registerBuiltinInputs = (block: BlockEntity) => {
-  builtinInputs.push(...[
+const addInputConvertWithBlock = (block: BlockEntity) => {
+  inputConverters.push(...[
     {
       name: 'query-page',
       validateFn: (input: string) => { return input === 'query-page'; },
@@ -54,7 +54,7 @@ const registerBuiltinInputs = (block: BlockEntity) => {
 }
 
 const convertInput = async (input: string) => {
-  for (let builtin of builtinInputs) {
+  for (let builtin of inputConverters) {
     if (!builtin.validateFn(input)) {
       continue;
     }
@@ -128,7 +128,7 @@ const advQuery = async (content: string) => {
 
 export const proxyQuery = async (block: BlockEntity) => {
   const content: string = block.content;
-  registerBuiltinInputs(block);
+  addInputConvertWithBlock(block);
 
   if (isDSLQuery(content)) {
     return await dslQuery(content);
