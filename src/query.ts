@@ -117,6 +117,7 @@ const advQuery = async (content: string) => {
       results = await logseq.DB.datascriptQuery(query, ...inputs);
     }
     if (results?.length > 0) {
+      results.sort();
       return results[0].map((_: any, colIndex: number) => results.map(row => row[colIndex]));
     } else {
       return;
