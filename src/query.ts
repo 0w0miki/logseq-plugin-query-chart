@@ -1,5 +1,5 @@
 import { getYYYMMDD } from "logseq-dateutils";
-import chrono from "chrono-node";
+import * as chrono from "chrono-node";
 import { BlockEntity } from "@logseq/libs/dist/LSPlugin.user";
 
 interface LogseqInputConvter {
