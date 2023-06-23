@@ -8,17 +8,63 @@ interface LogseqInputConvter {
   getValue: (input: string) => any,
 }
 
+const relativeReg = /^[+-](\d+)([dwmy])(-(start|end|ms|\d{2}|\d{4}|\d{6}|\d{9}))?$/;
 const inputConverters: LogseqInputConvter[] = [
   {
+    name: 'timestamp',
+    validateFn: (input: string) => { return input === "right-now-ms"; },
+    getValue: (input: string) => { return new Date().getTime(); }
+  },
+  {
     name: 'date',
-    validateFn: (input: string) => {
-      return /today|yesterday|\dd(-before|-after)?/.test(input);
-    },
+    validateFn: (input: string) => { return /^today|yesterday|tomorrow$/.test(input); },
+    getValue: (input: string) => { return getYYYMMDD(chrono.parse(input)[0].start.date()); }
+  },
+  {
+    name: 'relative-date',
+    validateFn: (input: string) => { return relativeReg.test(input); },
     getValue: (input: string) => {
-      if (input !== "today" && input !== "yesterday") {
-        input = input.replace("d", "days").replace("-", " ")
+      let regResult = relativeReg.exec(input)!;
+      console.debug(regResult);
+      const isAdd: boolean = input[0] === '+';
+      const dateNum = Number(regResult[1]);
+      const dateUnit = regResult[2];
+      const tsOption = regResult[4];
+      let op = isAdd
+        ? (a: any, b: any) => { return a + b }
+        : (a: any, b: any) => { return a - b };
+      let date = new Date();
+
+      // Do the date part
+      if (dateUnit === 'd') {
+        date.setDate(op(date.getDate(), dateNum));
+      } else if (dateUnit === 'w') {
+        date.setDate(op(date.getDate(), 7 * dateNum))
+      } else if (dateUnit === 'm') {
+        date.setMonth(op(date.getMonth(), dateNum));
+      } else if (dateUnit === 'y') {
+        date.setFullYear(op(date.getFullYear(), dateNum));
       }
-      return getYYYMMDD(chrono.parse(input)[0].start.date());
+
+      if (tsOption !== undefined) {
+        // with timestamp
+        let hour, minute, second, millisecond;
+        if (tsOption === "start" || (tsOption === "ms" && !isAdd)) {
+          hour = 0, minute = 0, second = 0, millisecond = 0
+        } else if (tsOption === "end" || (tsOption === "ms" && isAdd)) {
+          hour = 23; minute = 59; second = 59; millisecond = 999;
+        } else {
+          hour = Number(tsOption.slice(0, 2));
+          minute = Number(tsOption.slice(2, 4));
+          second = Number(tsOption.slice(4, 6));
+          millisecond = Number(tsOption.slice(6, 9));
+        }
+        date.setHours(hour); date.setMinutes(minute); date.setSeconds(second); date.setMilliseconds(millisecond);
+        return date.getTime();
+      } else {
+        // without timestamp
+        return getYYYMMDD(date);
+      }
     }
   },
   {
