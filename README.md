@@ -60,12 +60,16 @@ You need to write a query whose result is a list of array. Take the following qu
           [(<= ?d ?today)]
           [?b :block/priority ?y]
   ]
-  :inputs [:7d-before :today]
+  :inputs [:-7d :today]
 ```
 The result would be like `[task1, A], [task2, B], [task3, C], ...`
 For x-y plot, the first elements in each array formats the data on x-axis.
 
 查询结果将为`[task1, A], [task2, B], [task3, C], ...`。对于x-y形式坐标系的图，第一个元素是横轴的标签。
+
+It is recommended to use the relative date input if you need date/time paremeter. Check the usage in [official document](https://docs.logseq.com/#/page/advanced%20queries)
+
+如果你需要日期或者时间作为查询参数，建议使用相对日期的形式，详见[官方文档](https://docs.logseq.com/#/page/advanced%20queries)
 
 ## Example (示例)
 I have page like the following one. I log the sleep time as `sleep-time [[改善睡眠质量，平均7小时]]`
