@@ -21,6 +21,14 @@ const inputConverters: LogseqInputConvter[] = [
     getValue: (input: string) => { return getYYYMMDD(chrono.parse(input)[0].start.date()); }
   },
   {
+    name: 'deprecated-date',
+    validateFn: (input: string) => { return /^\dd(-before|-after)?$/.test(input); },
+    getValue: (input: string) => {
+      input = input.replace("d", "days").replace("-", " ");
+      return getYYYMMDD(chrono.parse(input)[0].start.date());
+    }
+  },
+  {
     name: 'relative-date',
     validateFn: (input: string) => { return relativeReg.test(input); },
     getValue: (input: string) => {
